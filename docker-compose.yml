@@ -1,0 +1,136 @@
+# ORBITWATCH – docker-compose.yml
+# Defines the four core infrastructure services for Phase 1.
+# All secrets are loaded from .env (never hardcoded here).
+# Network: orbitwatch_net (bridge) – all containers communicate here.
+
+version: "3.9"
+
+# ── Named volumes for data persistence ────────────────────────────────────────
+volumes:
+  postgres_data:
+  mongo_data:
+  redpanda_data:
+
+# ── Shared network ─────────────────────────────────────────────────────────────
+networks:
+  orbitwatch_net:
+    driver: bridge
+
+services:
+
+  # ── PostgreSQL 16 ──────────────────────────────────────────────────────────
+  # Relational store for the staging, warehouse, audit and quality schemas.
+  # The sql/init directory is mounted so init scripts run on first start of a
+  # fresh volume (Postgres only executes them once, on an empty data directory).
+  postgres:
+    image: postgres:16
+    container_name: orbitwatch_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # These are passed into the container so 01_roles.sh can read them.
+      ETL_DB_USER: ${ETL_DB_USER}
+      ETL_DB_PASSWORD: ${ETL_DB_PASSWORD}
+      DASHBOARD_DB_USER: ${DASHBOARD_DB_USER}
+      DASHBOARD_DB_PASSWORD: ${DASHBOARD_DB_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - orbitwatch_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ── MongoDB 7 ──────────────────────────────────────────────────────────────
+  # Document store for raw API responses from CelesTrak and NOAA SWPC.
+  mongo:
+    image: mongo:7
+    container_name: orbitwatch_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - orbitwatch_net
+    healthcheck:
+      # mongosh is bundled in mongo:7; ping returns { ok: 1 } when healthy.
+      test: >
+        mongosh --quiet --eval
+        "db.adminCommand('ping').ok"
+        mongodb://${MONGO_USER}:${MONGO_PASSWORD}@localhost:27017/admin
+        || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── Redpanda (Kafka-compatible streaming broker) ────────────────────────────
+  # Single-node, low-memory dev mode.
+  # Two listeners:
+  #   PLAINTEXT      (9092)  – used by containers inside orbitwatch_net
+  #   PLAINTEXT_HOST (19092) – exposed to the host; a Python client on the
+  #                            host connects to localhost:19092
+  redpanda:
+    image: redpandadata/redpanda:v24.1.13
+    container_name: orbitwatch_redpanda
+    restart: unless-stopped
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=512M
+      - --overprovisioned
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:19092
+      - --advertise-kafka-addr=PLAINTEXT://redpanda:9092,PLAINTEXT_HOST://localhost:19092
+      - --pandaproxy-addr=0.0.0.0:8082
+      - --advertise-pandaproxy-addr=localhost:8082
+    ports:
+      - "19092:19092"   # Kafka API – host access
+      - "8082:8082"     # HTTP Proxy (Pandaproxy) – optional REST access
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    networks:
+      - orbitwatch_net
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 15s
+      timeout: 10s
+      retries: 6
+      start_period: 30s
+
+  # ── Redpanda Console (Kafka UI) ────────────────────────────────────────────
+  # Web UI for browsing topics, partitions and consumer groups.
+  # Connects to Redpanda via the internal listener (port 9092 inside the network).
+  redpanda-console:
+    image: redpandadata/console:latest
+    container_name: orbitwatch_redpanda_console
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    ports:
+      - "8080:8080"
+    networks:
+      - orbitwatch_net
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+# ──────────────────────────────────────────────────────────────────────────────
+# NOTE: Airflow service will be added in Phase 8.
+# It will require its own Postgres metadata DB, a Redis broker,
+# the webserver, scheduler, and worker containers.
+# ──────────────────────────────────────────────────────────────────────────────

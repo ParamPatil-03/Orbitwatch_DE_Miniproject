@@ -1,0 +1,25 @@
+# ORBITWATCH – pyproject.toml
+# Minimal project metadata and pytest configuration.
+# Build backend is NOT configured here because we use requirements.txt directly.
+
+[project]
+name = "orbitwatch"
+version = "0.1.0"
+description = "Space Traffic and Debris Data Platform – Phase 1: Infrastructure"
+requires-python = ">=3.11"
+authors = [
+  { name = "ORBITWATCH Team" }
+]
+readme = "README.md"
+
+[tool.pytest.ini_options]
+# Test discovery: look in the tests/ directory.
+testpaths = ["tests"]
+pythonpath = ["src"]
+# Show short traceback on failures; -v for verbose output.
+addopts = "-v --tb=short"
+# Treat missing markers as an error to keep tests organised.
+# Add markers here as new phases add more tests.
+markers = [
+  "live: marks tests that require live Docker services (skipped if unavailable)",
+]

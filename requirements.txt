@@ -1,0 +1,48 @@
+# ORBITWATCH – requirements.txt
+# All runtime and development dependencies for the project.
+# Versions are pinned to minimum tested values; update with care.
+# Phase 1 actively uses: pydantic-settings, sqlalchemy, psycopg, pymongo,
+#                        confluent-kafka, python-dotenv, pytest.
+# The rest are installed now so the environment is ready for later phases.
+
+# ── Configuration & environment ───────────────────────────────────────────────
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# ── Ingestion & HTTP ──────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+requests>=2.31.0
+httpx>=0.27.0
+
+# ── Streaming (Kafka / Redpanda) ──────────────────────────────────────────────
+confluent-kafka>=2.3.0
+
+# ── Relational database ────────────────────────────────────────────────────────
+sqlalchemy>=2.0.25
+# psycopg v3 with pre-compiled binary (no libpq build required on host)
+psycopg[binary]>=3.1.17
+
+# ── Document database ─────────────────────────────────────────────────────────
+pymongo>=4.6.1
+
+# ── Data processing ───────────────────────────────────────────────────────────
+pandas>=2.2.0
+polars>=0.20.3
+duckdb>=0.10.0
+pyarrow>=14.0.2
+
+# ── Visualization ─────────────────────────────────────────────────────────────
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ── Data quality ──────────────────────────────────────────────────────────────
+great-expectations>=0.18.8
+
+# ── Serving & dashboard ────────────────────────────────────────────────────────
+streamlit>=1.31.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=8.0.0
+pytest-cov>=4.1.0

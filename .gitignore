@@ -1,0 +1,54 @@
+# ORBITWATCH - Git ignore rules
+
+# ── Environment & Secrets ──────────────────────────────────────────────────────
+.env
+*.env.local
+
+# ── Logs (keep the folder via .gitkeep) ─────────────────────────────────────────
+logs/*
+!logs/.gitkeep
+
+# ── Data directories (keep folders via .gitkeep) ────────────────────────────────
+data/raw/*
+!data/raw/.gitkeep
+data/staging/*
+!data/staging/.gitkeep
+data/curated/*
+!data/curated/.gitkeep
+data/errors/*
+!data/errors/.gitkeep
+
+# ── Docs ──────────────────────────────────────────────────────────────────────
+docs/figures/*.png
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.virtualenv/
+
+# ── Testing & Coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── IDE & OS ──────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
