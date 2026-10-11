@@ -89,6 +89,15 @@ class Settings(BaseSettings):
 
     @computed_field  # type: ignore[misc]
     @property
+    def admin_postgres_url(self) -> str:
+        """SQLAlchemy connection URL for the admin user (psycopg v3 driver)."""
+        return (
+            f"postgresql+psycopg://{self.postgres_user}:{self.postgres_password}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        )
+
+    @computed_field  # type: ignore[misc]
+    @property
     def mongo_uri(self) -> str:
         """PyMongo connection URI including credentials."""
         return (

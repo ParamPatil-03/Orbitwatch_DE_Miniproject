@@ -72,14 +72,27 @@ docker compose down -v
 ## Roadmap
 - [x] Phase 1: Infrastructure and Setup
 - [x] Phase 2: Exploratory Data Analysis and Data Cleaning
-- [ ] Phase 3: FastAPI Ingestion
-- [ ] Phase 4: Streaming
+- [x] Phase 3: FastAPI Ingestion
+- [x] Phase 4: Streaming
 - [ ] Phase 5: Validation
 - [ ] Phase 6: Warehouse and ETL
 - [ ] Phase 7: Analytics
 - [ ] Phase 8: Orchestration
 - [ ] Phase 9: Lakehouse and Scale
 - [ ] Phase 10: Dashboard
+
+## Phase 3: FastAPI Ingestion
+
+To start the API, run:
+```bash
+uvicorn orbitwatch.ingestion.api:app --reload --port 8000 --app-dir src
+```
+Then, open [http://localhost:8000/docs](http://localhost:8000/docs) in your browser.
+
+To run the bulk loader and ingest the Phase 2 raw files into MongoDB via the API, execute:
+```bash
+python scripts/load_raw_to_mongo.py
+```
 
 ## Phase 2: Data Exploration & Cleaning
 
@@ -88,3 +101,25 @@ To run Phase 2 (which downloads samples to `data/raw/`, profiles them, cleans th
 python scripts/run_phase2.py
 ```
 This generates the `docs/data_profile.md` report and charts in `docs/figures/`.
+
+## Phase 4: Streaming (Kafka to PostgreSQL)
+
+To create the Redpanda topics:
+```bash
+python scripts/create_topics.py
+```
+
+To apply the SQL migration for staging tables:
+```bash
+python scripts/apply_sql.py sql/migrations/003_staging_tables.sql
+```
+
+To stream the MongoDB raw data into Redpanda (Producer):
+```bash
+python src/orbitwatch/streaming/producer.py --source all
+```
+
+To consume the stream and insert it into PostgreSQL staging tables (Consumer):
+```bash
+python src/orbitwatch/streaming/consumer.py --once
+```
