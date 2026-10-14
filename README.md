@@ -42,19 +42,29 @@ The platform provides a complete data engineering solution: from polyglot raw in
 
 ---
 
-## Quick Start (One-Click Launcher)
+## Quick Start & Installation (For New Clones)
 
-To spin up all Docker containers, apply migrations, run the end-to-end data pipeline, export to Delta Lake, and launch the interactive Streamlit dashboard:
+### Prerequisites (Only 2 Requirements)
+Before running this project on any machine, ensure you have:
+1. **Python 3.11 or higher** ([python.org](https://www.python.org/downloads/)) — *(Ensure **"Add python.exe to PATH"** is checked during installation)*.
+2. **Docker Desktop** ([docker.com](https://www.docker.com/products/docker-desktop/)) — *(Must be running in the background)*.
 
-1. **Ensure Docker Desktop is running.**
-2. **Double-click** [`start_orbitwatch.bat`](file:///c:/Users/PARAM/Desktop/de%20miniproject/orbitwatch/start_orbitwatch.bat) in File Explorer, or run it from PowerShell / Command Prompt:
-   ```cmd
-   .\start_orbitwatch.bat
-   ```
+---
 
-> **Menu Options in `start_orbitwatch.bat`:**
-> - **Option 1 (Default, auto-starts in 5s):** Runs the full pipeline from scratch (Ingest $\rightarrow$ Validate $\rightarrow$ Warehouse $\rightarrow$ Lakehouse) and launches the dashboard.
-> - **Option 2:** Fast-starts the dashboard immediately using already loaded warehouse tables without waiting for ETL.
+### Running on Any Computer (Zero-Config 2-Step Run)
+
+If you or anyone else just cloned/downloaded this repository onto a fresh computer:
+
+1. **Open Docker Desktop** (ensure the engine is running).
+2. **Double-click [`start_orbitwatch.bat`](start_orbitwatch.bat)** (or run `.\start_orbitwatch.bat` from Command Prompt / PowerShell).
+
+#### What `start_orbitwatch.bat` does automatically on first run:
+- **Automatic Configuration:** Detects if `.env` is missing and copies `.env.example` $\rightarrow$ `.env`.
+- **Automatic Virtual Environment:** Detects if `.venv` is missing, creates it, and installs all required dependencies from `requirements.txt`.
+- **Container Orchestration:** Boots up PostgreSQL 16, MongoDB 7, and Redpanda via `docker compose up -d`.
+- **Database Migrations:** Applies SQL migrations (`001` to `005`) for staging, audit, quality, and dimensional star schema (`dw`).
+- **Initial Data Pipeline:** If the database is empty, it runs initial ingestion, validation, and warehouse loading.
+- **Launches Dashboard:** Automatically opens your default web browser to **http://localhost:8501**.
 
 ---
 
