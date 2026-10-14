@@ -154,7 +154,7 @@ class StreamProducer:
         run_id = str(uuid.uuid4())
         total_processed = sum(c["sent"] for c in self.stats.values())
         total_failed = sum(c["failed"] for c in self.stats.values())
-        status = "completed" if total_failed == 0 else "failed"
+        status = "success" if total_failed == 0 else "failed"
         
         with engine.begin() as conn:
             conn.execute(

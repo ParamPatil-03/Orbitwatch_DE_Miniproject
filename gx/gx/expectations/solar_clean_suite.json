@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "id": "fa5b45ea-c1ee-476c-89ae-6bd7ae3e1996",
+      "kwargs": {
+        "column": "time_tag"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "34bc634b-d337-45ce-a01a-e7959e82f9a5",
+      "kwargs": {
+        "column": "time_tag"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "82a64f9a-1306-4b15-80f4-c18b9f67a3a4",
+      "kwargs": {
+        "column": "f107",
+        "min_value": 0.0,
+        "mostly": 0.95
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "a59d47e7-9bd9-4b2e-bedd-b2501ea10da9",
+      "kwargs": {
+        "column": "ssn",
+        "min_value": 0.0,
+        "mostly": 0.95
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "8b158fbd-d643-4d2c-9cc1-6238d3df0209",
+  "meta": {
+    "great_expectations_version": "1.24.0"
+  },
+  "name": "solar_clean_suite",
+  "notes": null
+}

@@ -1,0 +1,39 @@
+{
+  "expectations": [
+    {
+      "id": "45cde5cd-0fd5-46e5-9fbd-c7fda75a868f",
+      "kwargs": {
+        "column": "time_tag"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "a24a0d56-fecc-4e47-887d-5425312cea32",
+      "kwargs": {
+        "column": "time_tag"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "3d386dc7-c30b-42ff-9772-8f5bd14985cf",
+      "kwargs": {
+        "column": "kp_index",
+        "max_value": 9.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "e1b63eb8-12a2-41e6-aa77-030aa493efbc",
+  "meta": {
+    "great_expectations_version": "1.24.0"
+  },
+  "name": "k_index_clean_suite",
+  "notes": null
+}

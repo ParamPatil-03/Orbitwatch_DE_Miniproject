@@ -17,6 +17,8 @@ data/curated/*
 !data/curated/.gitkeep
 data/errors/*
 !data/errors/.gitkeep
+data/lake/*
+!data/lake/.gitkeep
 
 # ── Docs ──────────────────────────────────────────────────────────────────────
 docs/figures/*.png
@@ -38,6 +40,10 @@ venv/
 env/
 ENV/
 .virtualenv/
+
+# ── Great Expectations ────────────────────────────────────────────────────────
+gx/uncommitted/
+gx/**/uncommitted/
 
 # ── Testing & Coverage ────────────────────────────────────────────────────────
 .pytest_cache/

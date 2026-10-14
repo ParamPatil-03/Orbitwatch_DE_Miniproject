@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "48ecc936-0083-4c87-bea2-a84a6b3fbad6",
+      "name": "asset_75dbaecf"
+    },
+    "batch_definition": {
+      "id": "753c66af-71e0-4061-9067-a0d517855681",
+      "name": "batch_75dbaecf"
+    },
+    "datasource": {
+      "id": "acfd0047-a0bc-491d-bf12-3507cdf64782",
+      "name": "ds_75dbaecf"
+    }
+  },
+  "id": "ee7fec87-7aa5-4c07-87f4-55fd9f3f49ae",
+  "name": "vd_75dbaecf",
+  "suite": {
+    "id": "8b158fbd-d643-4d2c-9cc1-6238d3df0209",
+    "name": "solar_clean_suite"
+  }
+}

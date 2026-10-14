@@ -1,0 +1,82 @@
+{
+  "expectations": [
+    {
+      "id": "8085329c-711e-4f92-ab0d-07b0350a8151",
+      "kwargs": {
+        "column": "NORAD_CAT_ID"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "cc4ca5ee-0db7-4a8d-9d81-06602141d41a",
+      "kwargs": {
+        "column": "INCLINATION",
+        "max_value": 180.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "ddd0d44b-3a3b-4208-845d-f179e514db03",
+      "kwargs": {
+        "column": "ECCENTRICITY",
+        "max_value": 0.9999999,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "6b396855-f79f-40e0-9829-0b9e58b9aa02",
+      "kwargs": {
+        "column": "MEAN_MOTION",
+        "min_value": 1e-09
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "8ffceb54-9a51-48bc-a92c-25843a81b162",
+      "kwargs": {
+        "column": "EPOCH"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "59808d51-c536-474f-8ab6-29fef8fb42c7",
+      "kwargs": {
+        "column": "EPOCH",
+        "max_value": "2026-10-14T15:57:22.462722+00:00"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "721c7bc5-7441-450f-9229-b2f7da50fa94",
+      "kwargs": {
+        "column_list": [
+          "NORAD_CAT_ID",
+          "EPOCH"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "089a2b82-d9fe-4f59-a658-bced7057b93e",
+  "meta": {
+    "great_expectations_version": "1.24.0"
+  },
+  "name": "gp_raw_suite",
+  "notes": null
+}
