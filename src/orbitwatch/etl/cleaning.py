@@ -46,7 +46,7 @@ def clean_satcat(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     
     # Strip text fields and replace empty strings with NaN
     for col in df.select_dtypes(include=['object']).columns:
-        df[col] = df[col].str.strip()
+        df[col] = df[col].apply(lambda x: x.strip() if isinstance(x, str) else x)
         df[col] = df[col].replace("", np.nan)
         
     numeric_cols = ["inclination", "apogee", "perigee", "period"]

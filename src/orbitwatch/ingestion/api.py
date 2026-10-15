@@ -9,7 +9,7 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Union, Dict, Any, Optional
 
-from fastapi import FastAPI, HTTPException, Header, Depends, Request, status, Security
+from fastapi import FastAPI, HTTPException, Header, Depends, Request, status, Security, Body
 from fastapi.security import APIKeyHeader
 from pydantic import ValidationError
 from pymongo import MongoClient, IndexModel, ASCENDING
@@ -102,14 +102,27 @@ def health_check():
     return {"status": "error", "db": "uninitialized"}
 
 @app.post("/ingest/{source}", response_model=IngestResponse)
-async def ingest_data(source: str, request: Request, api_key: str = Depends(verify_api_key)):
+async def ingest_data(
+    source: str,
+    body: Union[Dict[str, Any], List[Dict[str, Any]]] = Body(
+        ...,
+        openapi_examples={
+            "satcat_example": {
+                "summary": "Sample Satellite Payload",
+                "value": {
+                    "NORAD_CAT_ID": 99999,
+                    "OBJECT_NAME": "PROJECT-ORBITWATCH",
+                    "OBJECT_TYPE": "PAY",
+                    "OWNER": "IND",
+                    "LAUNCH_DATE": "2026-10-15"
+                }
+            }
+        }
+    ),
+    api_key: str = Depends(verify_api_key)
+):
     if source not in SOURCE_MODELS:
         raise HTTPException(status_code=404, detail=f"Unknown source: {source}")
-        
-    try:
-        body = await request.json()
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=422, detail="Invalid JSON body")
         
     if isinstance(body, dict):
         records = [body]

@@ -18,8 +18,9 @@ The platform provides a complete data engineering solution: from polyglot raw in
 
 ## Table of Contents
 
-1. [Quick Start (One-Click Launcher)](#quick-start-one-click-launcher)
-2. [High-Level Architecture](#high-level-architecture)
+1. [Quick Start & Installation (One-Click Launcher)](#quick-start--installation-for-new-clones)
+2. [Live Demonstration Guide (The 4 Interactive Interfaces)](#live-demonstration-guide-the-4-interactive-interfaces)
+3. [High-Level Architecture](#high-level-architecture)
 3. [Dimensional Star Schema (Schema `dw`)](#dimensional-star-schema-schema-dw)
 4. [Project Directory Layout](#project-directory-layout)
 5. [Infrastructure & Services](#infrastructure--services)
@@ -64,7 +65,81 @@ If you or anyone else just cloned/downloaded this repository onto a fresh comput
 - **Container Orchestration:** Boots up PostgreSQL 16, MongoDB 7, and Redpanda via `docker compose up -d`.
 - **Database Migrations:** Applies SQL migrations (`001` to `005`) for staging, audit, quality, and dimensional star schema (`dw`).
 - **Initial Data Pipeline:** If the database is empty, it runs initial ingestion, validation, and warehouse loading.
-- **Launches Dashboard:** Automatically opens your default web browser to **http://localhost:8501**.
+- **Launches Demonstration Environment:** Automatically opens all 4 interactive presentation tabs in your browser (**Streamlit**, **Redpanda Console**, **FastAPI Swagger Docs**, and **Great Expectations Quality Report**).
+
+---
+
+## Live Demonstration Guide (The 4 Interactive Interfaces)
+
+When you run `start_orbitwatch.bat`, the system boots up and automatically opens 4 interconnected browser tabs to showcase every layer of the platform:
+
+| Tab | Service | URL / Location | Purpose in the Architecture |
+| :---: | :--- | :--- | :--- |
+| **1** | **Streamlit Executive Dashboard** | `http://localhost:8501` | **Serving & Analytics Layer:** Visualizes space domain metrics, orbital regime distributions (LEO, MEO, GEO), and the physical correlation ($r \approx 0.706$) between Solar Radio Flux ($F_{10.7}$) and Satellite Atmospheric Decays. Runs as read-only `dashboard_user`. |
+| **2** | **Redpanda Console** | `http://localhost:8080` | **Event Streaming Layer (Kafka):** Visualizes live streaming topics (`orbitwatch.gp_updates`, `orbitwatch.solar_updates`), consumer group offsets, partition throughput, and real-time JSON message envelopes. |
+| **3** | **FastAPI Ingestion Docs** | `http://localhost:8000/docs#/` | **REST Microservice Layer:** Interactive Swagger UI for authenticated telemetry ingestion (`X-API-Key`). Validates incoming payloads via Pydantic schemas and enforces idempotency before writing to MongoDB 7. |
+| **4** | **Great Expectations Data Docs** | `docs/validation_report/index.html` | **Automated Data Quality Layer:** Standalone HTML testing portal showing the pass/fail results for 8 expectation suites (bounds checks on inclination $0^\circ \le i \le 180^\circ$, eccentricity $0 \le e < 1$, chronological integrity, and dead-letter quarantine). |
+
+---
+
+### Step-by-Step Live Data Journey (How to Demonstrate Changes Across All 4 Systems)
+
+Follow these 4 steps in front of your teacher/evaluator to prove that data flows live from ingestion to streaming, quality testing, and executive dashboarding:
+
+```
+[ Step 1: FastAPI ] ──▶ [ Step 2: Redpanda ] ──▶ [ Step 3: Great Expectations ] ──▶ [ Step 4: Streamlit ]
+   POST New Satellite      Message Streamed Live       Automated Quality Gate Passes    Dashboard KPI Increments
+```
+
+#### Step 1: Ingest a New Satellite on FastAPI (`http://localhost:8000/docs#/`)
+1. Open `http://localhost:8000/docs#/` in your browser.
+2. Click the green **Authorize** button (top right 🔒).
+3. In the `Value:` field, enter:
+   ```text
+   change_me_api_key
+   ```
+   *(Click "Authorize", then "Close")*.
+4. Click on **`POST /ingest/{source}`** $\rightarrow$ click **`Try it out`**.
+5. Set:
+   * **`source`**: `satcat`
+   * **`Request body`**: Paste this JSON payload:
+     ```json
+     {
+       "NORAD_CAT_ID": 99999,
+       "OBJECT_NAME": "PROJECT-ORBITWATCH",
+       "OBJECT_TYPE": "PAY",
+       "OWNER": "IND",
+       "LAUNCH_DATE": "2026-10-15"
+     }
+     ```
+6. Click the blue **Execute** button.
+   * **Visible Result on Screen 1:** You get `HTTP 200` with `"inserted": 1` and a unique `batch_id`. The satellite is now stored in MongoDB!
+
+#### Step 2: Stream Live to Redpanda Kafka Broker (`http://localhost:8080/`)
+1. Open a PowerShell terminal in the project directory:
+   ```powershell
+   cd "c:\Users\PARAM\Desktop\de miniproject\orbitwatch"
+   .venv\Scripts\python.exe src/orbitwatch/streaming/producer.py --source gp --limit 5
+   ```
+2. Open **Redpanda Console** (`http://localhost:8080`).
+3. Click **Topics** $\rightarrow$ select **`orbitwatch.gp_updates`** $\rightarrow$ click the **Messages** tab.
+   * **Visible Result on Screen 2:** The total message count ticks up by **+5**. Click the top message to inspect the deterministic `event_id` (UUIDv5) and real-time UTC timestamp!
+
+#### Step 3: Run Automated Great Expectations Validation (`docs/validation_report/index.html`)
+1. In your PowerShell terminal, execute the quality gates:
+   ```powershell
+   .venv\Scripts\python.exe scripts/run_validation.py --dataset satcat
+   ```
+2. Open `docs/validation_report/index.html` in your browser and press **`F5` (Refresh)**.
+   * **Visible Result on Screen 3:** A brand-new validation run appears at the top of the **Validation Results** table with the exact current timestamp and a green checkmark (`Success`), proving automated testing verified all columns.
+
+#### Step 4: Load into Warehouse and View on Streamlit Dashboard (`http://localhost:8501/`)
+1. In your PowerShell terminal, execute the dimensional warehouse load:
+   ```powershell
+   .venv\Scripts\python.exe scripts/load_warehouse.py
+   ```
+2. Go to **Streamlit** (`http://localhost:8501/`) and press **`R`** (or refresh the page).
+   * **Visible Result on Screen 4:** The first KPI card **"Catalogued Satellites"** increments live (e.g., from `70,953` to `70,954`)!
 
 ---
 

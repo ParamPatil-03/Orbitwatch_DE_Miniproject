@@ -885,5 +885,101 @@ fluent_datasources:
           batch_df4771d8:
             id: 9f9fb76c-280b-40d2-8640-d84094d7c0d0
             partitioner:
+  ds_23360fd9:
+    type: pandas
+    id: 76f10a2e-37c9-411c-8c49-2b0bb30ca1dc
+    assets:
+      asset_23360fd9:
+        type: dataframe
+        id: c13058d1-1c83-4aeb-90d9-b5e546a1dd56
+        batch_metadata: {}
+        batch_definitions:
+          batch_23360fd9:
+            id: 27db7808-9657-4552-b59a-05c2e6179630
+            partitioner:
+  ds_2fa74cb3:
+    type: pandas
+    id: 44a9b09c-4150-4166-bbb2-50552de9984e
+    assets:
+      asset_2fa74cb3:
+        type: dataframe
+        id: 3d863265-5b35-44b2-ab0a-3341119a91ff
+        batch_metadata: {}
+        batch_definitions:
+          batch_2fa74cb3:
+            id: 7ef08c33-a109-407a-96c4-b391f85ad47b
+            partitioner:
+  ds_f5a902eb:
+    type: pandas
+    id: 6495cc7f-8811-4fbb-88a4-e9b44e9c6034
+    assets:
+      asset_f5a902eb:
+        type: dataframe
+        id: c7bf1454-9d0e-41e1-b893-f7782d8f1709
+        batch_metadata: {}
+        batch_definitions:
+          batch_f5a902eb:
+            id: 1e758930-5c7a-42c2-9982-0ca60216ff2a
+            partitioner:
+  ds_275c763e:
+    type: pandas
+    id: ce699318-d226-482f-a543-c5dc24c75074
+    assets:
+      asset_275c763e:
+        type: dataframe
+        id: 3346ddb9-57d2-42d9-b729-448db209fbd5
+        batch_metadata: {}
+        batch_definitions:
+          batch_275c763e:
+            id: 02839831-eec2-471e-9f9d-7330cd363d19
+            partitioner:
+  ds_982acd62:
+    type: pandas
+    id: e285d4e0-d77f-4150-9730-5411ee3d76e0
+    assets:
+      asset_982acd62:
+        type: dataframe
+        id: d02adbe0-fc15-40a9-bca1-2f93a2211fbc
+        batch_metadata: {}
+        batch_definitions:
+          batch_982acd62:
+            id: 94cf4e66-9109-4d04-a735-747a18a6a890
+            partitioner:
+  ds_79947ece:
+    type: pandas
+    id: e974a8ea-92f7-4735-bcf0-1db55645e623
+    assets:
+      asset_79947ece:
+        type: dataframe
+        id: b232356e-9d39-4160-9fa7-11a42d7c33d9
+        batch_metadata: {}
+        batch_definitions:
+          batch_79947ece:
+            id: 32367367-4d49-4021-9dfd-92f90ebd74ee
+            partitioner:
+  ds_d89e5f72:
+    type: pandas
+    id: 5740966b-326e-4de4-83d3-a75c6e563366
+    assets:
+      asset_d89e5f72:
+        type: dataframe
+        id: ab26019c-059b-4ab2-b24a-0d0355c26efa
+        batch_metadata: {}
+        batch_definitions:
+          batch_d89e5f72:
+            id: 0f929043-f551-4c60-af25-d5f61fc00a42
+            partitioner:
+  ds_1bdc3a56:
+    type: pandas
+    id: 3c81954d-3f17-41e2-9baf-37ed2fb2c376
+    assets:
+      asset_1bdc3a56:
+        type: dataframe
+        id: 36614f93-8ecf-4661-a869-6a6143ec4144
+        batch_metadata: {}
+        batch_definitions:
+          batch_1bdc3a56:
+            id: daa58d84-c48c-446a-b69c-7ded317ba404
+            partitioner:
 analytics_enabled:
 data_context_id: 9266cc90-6de5-4caa-82a7-4ee7bf91f34e
