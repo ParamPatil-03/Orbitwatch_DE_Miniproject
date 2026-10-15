@@ -69,20 +69,42 @@ echo Warehouse is empty. Running initial ETL load...
 goto start_dashboard
 
 :start_dashboard
-echo [4/4] Launching Streamlit Dashboard...
+echo [4/4] Launching Services & Interactive UIs...
 echo.
 echo ======================================================================
-echo   ORBITWATCH SYSTEM IS LIVE!
-echo   - Dashboard URL:    http://localhost:8501
-echo   - Redpanda Console: http://localhost:8080
+echo   ORBITWATCH DEMONSTRATION ENVIRONMENT IS LIVE!
+echo   1. Streamlit Dashboard:    http://localhost:8501
+echo   2. Redpanda Kafka Console: http://localhost:8080
+echo   3. FastAPI Ingestion Docs: http://localhost:8000/docs
+echo   4. Data Quality Report:    docs\validation_report\index.html
 echo ======================================================================
 echo.
-echo Opening browser to http://localhost:8501 ...
-echo Keep this command window open while using ORBITWATCH.
-echo Press Ctrl+C in this window to stop the server.
+
+:: Launch FastAPI Ingestion Microservice in background
+echo Starting FastAPI Ingestion Service (Port 8000)...
+start "ORBITWATCH Ingestion API" /min "%PYTHON%" -m uvicorn orbitwatch.ingestion.api:app --host 127.0.0.1 --port 8000
+
+:: Brief wait for services to initialize
+ping 127.0.0.1 -n 3 >nul
+
+:: Automatically open demonstration tabs in default web browser
+echo Opening demonstration tabs in your web browser...
+start "" "http://localhost:8080"
+start "" "http://localhost:8000/docs"
+if exist "%~dp0docs\validation_report\index.html" (
+    start "" "%~dp0docs\validation_report\index.html"
+)
+
+echo.
+echo Launching Streamlit Dashboard (will open automatically when ready)...
+echo Keep this command window open while presenting ORBITWATCH to your teacher.
+echo Press Ctrl+C in this window when you wish to stop the services.
 echo.
 
 %STREAMLIT% run app/dashboard.py --server.port 8501
+
+:: Clean up background FastAPI process when Streamlit exits
+taskkill /fi "WINDOWTITLE eq ORBITWATCH Ingestion API*" /f >nul 2>&1
 pause
 exit /b 0
 
